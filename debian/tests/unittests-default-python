@@ -1,0 +1,11 @@
+#!/bin/sh
+# Run python-cachetools unit tests using the default Python version. Assumes
+# $AUTOPKGTEST_TMP is set, see /usr/share/doc/autopkgtest/README.package-tests.rst.gz
+set -e
+
+# We just copy the entire test suite to the $AUTOPKGTEST_TMP directory and run the
+# tests from within there.
+mkdir "$AUTOPKGTEST_TMP"/python
+cp -r tests "$AUTOPKGTEST_TMP"/python/
+cd "$AUTOPKGTEST_TMP"/python
+python -m unittest discover -v

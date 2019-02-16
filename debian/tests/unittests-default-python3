@@ -1,0 +1,11 @@
+#!/bin/sh
+# Run python3-cachetools unit tests using the default Python 3 version. Assumes
+# $AUTOPKGTEST_TMP is set, see /usr/share/doc/autopkgtest/README.package-tests.rst.gz
+set -e
+
+# We just copy the entire test suite to the $AUTOPKGTEST_TMP directory and run the
+# tests from within there.
+mkdir "$AUTOPKGTEST_TMP"/python3
+cp -r tests "$AUTOPKGTEST_TMP"/python3
+cd "$AUTOPKGTEST_TMP"/python3
+python3 -m unittest discover -v

@@ -1,0 +1,7 @@
+Tests: unittests-default-python
+Restrictions: allow-stderr
+Depends: python-cachetools
+
+Tests: unittests-default-python3
+Restrictions: allow-stderr
+Depends: python3-cachetools

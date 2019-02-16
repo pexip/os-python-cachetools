@@ -1,0 +1,52 @@
+Source: python-cachetools
+Section: python
+Priority: optional
+Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+Uploaders:
+ Christian Kastner <ckk@debian.org>,
+Build-Depends:
+ debhelper-compat (= 12),
+ dh-python,
+ python-all,
+ python-setuptools,
+ python3-all,
+ python3-setuptools,
+Rules-Requires-Root: no
+Standards-Version: 4.3.0
+Homepage: https://github.com/tkem/cachetools/
+Vcs-Git: https://salsa.debian.org/python-team/modules/python-cachetools.git
+Vcs-Browser: https://salsa.debian.org/python-team/modules/python-cachetools
+
+Package: python-cachetools
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python:Depends},
+Description: extensible memoizing collections and decorators for Python
+ This Python module provides various memoizing collections and decorators,
+ including a variant of the Python 3 Standard Library functools.lru_cache()
+ function decorator.
+ .
+ The supported cache algorithms are:
+ .
+  * Least recently used (LRU)
+  * Least frequently used (LFU)
+  * Random replacement (RR)
+  * Per-item time-to-live (TTL)
+
+Package: python3-cachetools
+Architecture: all
+Depends:
+ ${misc:Depends},
+ ${python3:Depends},
+Description: extensible memoizing collections and decorators for Python 3
+ This Python 3 module provides various memoizing collections and decorators,
+ including a variant of the Python 3 Standard Library functools.lru_cache()
+ function decorator.
+ .
+ The supported cache algorithms are:
+ .
+  * Least recently used (LRU)
+  * Least frequently used (LFU)
+  * Random replacement (RR)
+  * Per-item time-to-live (TTL)
