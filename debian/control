@@ -1,11 +1,12 @@
 Source: python-cachetools
 Section: python
 Priority: optional
-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
-Uploaders:
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian Python Modules Team <python-modules-team@lists.alioth.debian.org>
+XSBC-Pexip-Original-Uploaders:
  Christian Kastner <ckk@debian.org>,
 Build-Depends:
- debhelper-compat (= 12),
+ debhelper (>= 9),
  dh-python,
  python-all,
  python-setuptools,
@@ -16,6 +17,7 @@ Standards-Version: 4.3.0
 Homepage: https://github.com/tkem/cachetools/
 Vcs-Git: https://salsa.debian.org/python-team/modules/python-cachetools.git
 Vcs-Browser: https://salsa.debian.org/python-team/modules/python-cachetools
+XS-Pexip-Upstream: http://mirror.einval.org/debian/ buster
 
 Package: python-cachetools
 Architecture: all

@@ -1,3 +1,10 @@
+python-cachetools (3.1.0-2pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+  * Tweak debhelper compat to build on older distros
+
+ -- Steve McIntyre <steve.mcintyre@pexip.com>  Mon, 06 Jul 2020 15:29:54 +0000
+
 python-cachetools (3.1.0-2) unstable; urgency=medium
 
   * Add gbp.conf for DEP-14 branch names
