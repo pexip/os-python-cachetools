@@ -1,10 +1,11 @@
+*********************************************************************
 :mod:`cachetools` --- Extensible memoizing collections and decorators
-=======================================================================
+*********************************************************************
 
 .. module:: cachetools
 
 This module provides various memoizing collections and decorators,
-including variants of the Python 3 Standard Library `@lru_cache`_
+including variants of the Python Standard Library's `@lru_cache`_
 function decorator.
 
 For the purpose of this module, a *cache* is a mutable_ mapping_ of a
@@ -27,12 +28,12 @@ calls are provided, too.
    import operator
    from cachetools import cached, cachedmethod, LRUCache
 
-   import mock
+   from unittest import mock
    urllib = mock.MagicMock()
 
 
 Cache implementations
-------------------------------------------------------------------------
+=====================
 
 This module provides several classes implementing caches using
 different cache algorithms.  All these classes derive from class
@@ -51,6 +52,13 @@ making the cache's size equal to the number of its items, or
 named constructor parameter `getsizeof`, which may specify a function
 of one argument used to retrieve the size of an item's value.
 
+Note that the values of a :class:`Cache` are mutable by default, as
+are e.g. the values of a :class:`dict`.  It is the user's
+responsibility to take care that cached values are not accidentally
+modified.  This is especially important when using a custom
+`getsizeof` function, since the size of an item's value will only be
+computed when the item is inserted into the cache.
+
 .. note::
 
    Please be aware that all these classes are *not* thread-safe.
@@ -68,6 +76,12 @@ of one argument used to retrieve the size of an item's value.
    additionally need to override :meth:`__getitem__`,
    :meth:`__setitem__` and :meth:`__delitem__`.
 
+.. autoclass:: FIFOCache(maxsize, getsizeof=None)
+   :members:
+
+   This class evicts items in the order they were added to make space
+   when necessary.
+
 .. autoclass:: LFUCache(maxsize, getsizeof=None)
    :members:
 
@@ -78,6 +92,12 @@ of one argument used to retrieve the size of an item's value.
    :members:
 
    This class discards the least recently used items first to make
+   space when necessary.
+
+.. autoclass:: MRUCache(maxsize, getsizeof=None)
+   :members:
+
+   This class discards the most recently used items first to make
    space when necessary.
 
 .. autoclass:: RRCache(maxsize, choice=random.choice, getsizeof=None)
@@ -101,10 +121,8 @@ of one argument used to retrieve the size of an item's value.
    will be discarded first to make space when necessary.
 
    By default, the time-to-live is specified in seconds and
-   :func:`time.monotonic` is used to retrieve the current time.  If
-   :func:`time.monotonic` is not available, e.g. when running Python
-   2.7, :func:`time.time` will be used.  A custom `timer` function can
-   be supplied if needed.
+   :func:`time.monotonic` is used to retrieve the current time.  A
+   custom `timer` function can be supplied if needed.
 
    .. method:: expire(self, time=None)
 
@@ -119,7 +137,7 @@ of one argument used to retrieve the size of an item's value.
 
 
 Extending cache classes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 Sometimes it may be desirable to notice when and what cache items are
 evicted, i.e. removed from a cache to make room for new items.  Since
@@ -153,13 +171,10 @@ key is not found:
    ...     def __missing__(self, key):
    ...         """Retrieve text of a Python Enhancement Proposal"""
    ...         url = 'http://www.python.org/dev/peps/pep-%04d/' % key
-   ...         try:
-   ...             with urllib.request.urlopen(url) as s:
-   ...                 pep = s.read()
-   ...                 self[key] = pep  # store text in cache
-   ...                 return pep
-   ...         except urllib.error.HTTPError:
-   ...             return 'Not Found'  # do not store in cache
+   ...         with urllib.request.urlopen(url) as s:
+   ...             pep = s.read()
+   ...             self[key] = pep  # store text in cache
+   ...             return pep
 
    >>> peps = PepStore(maxsize=4)
    >>> for n in 8, 9, 290, 308, 320, 8, 218, 320, 279, 289, 320:
@@ -174,7 +189,7 @@ in its own right.
 
 
 Memoizing decorators
-------------------------------------------------------------------------
+====================
 
 The :mod:`cachetools` module provides decorators for memoizing
 function and method calls.  This can save time when a function is
@@ -212,7 +227,7 @@ often called with the same arguments:
    implementing the `context manager`_ protocol.  Any access to the
    cache will then be nested in a ``with lock:`` statement.  This can
    be used for synchronizing thread access to the cache by providing a
-   :class:`threading.RLock` instance, for example.
+   :class:`threading.Lock` instance, for example.
 
    .. note::
 
@@ -232,12 +247,13 @@ often called with the same arguments:
 
    .. testcode::
 
-      from threading import RLock
+      from cachetools.keys import hashkey
+      from threading import Lock
 
       cache = LRUCache(maxsize=32)
-      lock = RLock()
+      lock = Lock()
 
-      @cached(cache, lock=lock)
+      @cached(cache, key=hashkey, lock=lock)
       def get_pep(num):
           'Retrieve text of a Python Enhancement Proposal'
           url = 'http://www.python.org/dev/peps/pep-%04d/' % num
@@ -247,6 +263,10 @@ often called with the same arguments:
       # make sure access to cache is synchronized
       with lock:
           cache.clear()
+
+      # always use the key function for accessing cache items
+      with lock:
+          cache.pop(hashkey(42), None)
 
    It is also possible to use a single shared cache object with
    multiple functions.  However, care must be taken that different
@@ -278,6 +298,7 @@ often called with the same arguments:
       599074578
       >>> list(sorted(numcache.items()))
       [..., (('fib', 42), 267914296), ..., (('luc', 42), 599074578)]
+
 
 .. decorator:: cachedmethod(cache, key=cachetools.keys.hashkey, lock=None)
 
@@ -325,8 +346,47 @@ often called with the same arguments:
       PEP #1: ...
 
 
+   When using a shared cache for multiple methods, be aware that
+   different cache keys must be created for each method even when
+   function arguments are the same, just as with the `@cached`
+   decorator:
+
+   .. testcode::
+
+      class CachedReferences(object):
+
+          def __init__(self, cachesize):
+              self.cache = LRUCache(maxsize=cachesize)
+
+          @cachedmethod(lambda self: self.cache, key=partial(hashkey, 'pep'))
+          def get_pep(self, num):
+              """Retrieve text of a Python Enhancement Proposal"""
+              url = 'http://www.python.org/dev/peps/pep-%04d/' % num
+              with urllib.request.urlopen(url) as s:
+                  return s.read()
+
+          @cachedmethod(lambda self: self.cache, key=partial(hashkey, 'rfc'))
+          def get_rfc(self, num):
+              """Retrieve text of an IETF Request for Comments"""
+              url = 'https://tools.ietf.org/rfc/rfc%d.txt' % num
+              with urllib.request.urlopen(url) as s:
+                  return s.read()
+
+      docs = CachedReferences(cachesize=100)
+      print("PEP #1: %s" % docs.get_pep(1))
+      print("RFC #1: %s" % docs.get_rfc(1))
+
+   .. testoutput::
+      :hide:
+      :options: +ELLIPSIS
+
+      PEP #1: ...
+      RFC #1: ...
+
+
+*****************************************************************
 :mod:`cachetools.keys` --- Key functions for memoizing decorators
-============================================================================
+*****************************************************************
 
 .. module:: cachetools.keys
 
@@ -367,10 +427,15 @@ The :func:`envkey` function can then be used in decorator declarations
 like this::
 
   @cached(LRUCache(maxsize=128), key=envkey)
+  def foo(x, y, z, env={}):
+      pass
+
+  foo(1, 2, 3, env=dict(a='a', b='b'))
 
 
+****************************************************************************
 :mod:`cachetools.func` --- :func:`functools.lru_cache` compatible decorators
-============================================================================
+****************************************************************************
 
 .. module:: cachetools.func
 
@@ -387,31 +452,64 @@ arguments of different types will be cached separately.  For example,
 ``f(3)`` and ``f(3.0)`` will be treated as distinct calls with
 distinct results.
 
-The wrapped function is instrumented with :func:`cache_info` and
+If a `user_function` is specified instead, it must be a callable.
+This allows the decorator to be applied directly to a user function,
+leaving the `maxsize` at its default value of 128::
+
+  @cachetools.func.lru_cache
+  def count_vowels(sentence):
+      sentence = sentence.casefold()
+      return sum(sentence.count(vowel) for vowel in 'aeiou')
+
+The wrapped function is instrumented with a :func:`cache_parameters`
+function that returns a new :class:`dict` showing the values for
+`maxsize` and `typed`.  This is for information purposes only.
+Mutating the values has no effect.
+
+The wrapped function is also instrumented with :func:`cache_info` and
 :func:`cache_clear` functions to provide information about cache
 performance and clear the cache.  Please see the
 :func:`functools.lru_cache` documentation for details.  Also note that
 all the decorators in this module are thread-safe by default.
 
-.. decorator:: lfu_cache(maxsize=128, typed=False)
+
+.. decorator:: fifo_cache(user_function)
+               fifo_cache(maxsize=128, typed=False)
+
+   Decorator that wraps a function with a memoizing callable that
+   saves up to `maxsize` results based on a First In First Out
+   (FIFO) algorithm.
+
+.. decorator:: lfu_cache(user_function)
+               lfu_cache(maxsize=128, typed=False)
 
    Decorator that wraps a function with a memoizing callable that
    saves up to `maxsize` results based on a Least Frequently Used
    (LFU) algorithm.
 
-.. decorator:: lru_cache(maxsize=128, typed=False)
+.. decorator:: lru_cache(user_function)
+               lru_cache(maxsize=128, typed=False)
 
    Decorator that wraps a function with a memoizing callable that
    saves up to `maxsize` results based on a Least Recently Used (LRU)
    algorithm.
 
-.. decorator:: rr_cache(maxsize=128, choice=random.choice, typed=False)
+.. decorator:: mru_cache(user_function)
+               mru_cache(maxsize=128, typed=False)
+
+   Decorator that wraps a function with a memoizing callable that
+   saves up to `maxsize` results based on a Most Recently Used (MRU)
+   algorithm.
+
+.. decorator:: rr_cache(user_function)
+               rr_cache(maxsize=128, choice=random.choice, typed=False)
 
    Decorator that wraps a function with a memoizing callable that
    saves up to `maxsize` results based on a Random Replacement (RR)
    algorithm.
 
-.. decorator:: ttl_cache(maxsize=128, ttl=600, timer=time.monotonic, typed=False)
+.. decorator:: ttl_cache(user_function)
+               ttl_cache(maxsize=128, ttl=600, timer=time.monotonic, typed=False)
 
    Decorator to wrap a function with a memoizing callable that saves
    up to `maxsize` results based on a Least Recently Used (LRU)

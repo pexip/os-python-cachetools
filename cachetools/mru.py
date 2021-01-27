@@ -1,10 +1,10 @@
 import collections
 
-from .cache import Cache
+from cachetools.cache import Cache
 
 
-class LRUCache(Cache):
-    """Least Recently Used (LRU) cache implementation."""
+class MRUCache(Cache):
+    """Most Recently Used (MRU) cache implementation."""
 
     def __init__(self, maxsize, getsizeof=None):
         Cache.__init__(self, maxsize, getsizeof)
@@ -25,7 +25,7 @@ class LRUCache(Cache):
         del self.__order[key]
 
     def popitem(self):
-        """Remove and return the `(key, value)` pair least recently used."""
+        """Remove and return the `(key, value)` pair most recently used."""
         try:
             key = next(iter(self.__order))
         except StopIteration:
@@ -35,6 +35,6 @@ class LRUCache(Cache):
 
     def __update(self, key):
         try:
-            self.__order.move_to_end(key)
+            self.__order.move_to_end(key, last=False)
         except KeyError:
             self.__order[key] = None

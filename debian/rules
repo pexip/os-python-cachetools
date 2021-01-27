@@ -5,7 +5,11 @@
 #export DH_VERBOSE=1
 
 %:
-	dh $@ --with python2,python3 --buildsystem=pybuild
+	dh $@ --with python3 --buildsystem=pybuild
 
 override_dh_missing:
 	dh_missing --fail-missing
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -rf cachetools.egg-info/
