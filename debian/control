@@ -17,7 +17,7 @@ Standards-Version: 4.3.0
 Homepage: https://github.com/tkem/cachetools/
 Vcs-Git: https://salsa.debian.org/python-team/modules/python-cachetools.git
 Vcs-Browser: https://salsa.debian.org/python-team/modules/python-cachetools
-XS-Pexip-Upstream: http://mirror.einval.org/debian/ buster
+XS-Pexip-Upstream: http://deb.debian.org/debian/ bullseye
 
 Package: python-cachetools
 Architecture: all
