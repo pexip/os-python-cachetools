@@ -1,3 +1,71 @@
+python-cachetools (4.2.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Christian Kastner <ckk@debian.org>  Wed, 27 Jan 2021 01:37:59 +0100
+
+python-cachetools (4.2.0-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Christian Kastner ]
+  * New upstream release.
+
+ -- Christian Kastner <ckk@debian.org>  Tue, 15 Dec 2020 20:21:20 +0100
+
+python-cachetools (4.1.1-1) unstable; urgency=medium
+
+  * New upstream version 4.1.1
+
+ -- Christian Kastner <ckk@debian.org>  Thu, 06 Aug 2020 22:33:29 +0200
+
+python-cachetools (4.1.0-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Christian Kastner ]
+  * New upstream version 4.1.0
+  * Bump Standards-Version to 4.5.0 (no changes needed)
+  * Clean in d/rules, easier to mentally parse
+
+ -- Christian Kastner <ckk@debian.org>  Tue, 21 Apr 2020 21:46:26 +0200
+
+python-cachetools (4.0.0-1) unstable; urgency=medium
+
+  * New upstream version 4.0.0
+  * Create d/clean to remove .egg-info
+
+ -- Christian Kastner <ckk@debian.org>  Wed, 08 Jan 2020 08:14:02 +0100
+
+python-cachetools (3.1.1-3) unstable; urgency=medium
+
+  * Team upload.
+  * Drop python2 support; Closes: #937627
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 26 Dec 2019 16:54:38 -0500
+
+python-cachetools (3.1.1-2) unstable; urgency=medium
+
+  * autopkgtest: Move from python to python2
+    Fixes a debci regression, in assumed connection to the py2removal efforts.
+
+ -- Christian Kastner <ckk@debian.org>  Tue, 29 Oct 2019 18:48:41 +0100
+
+python-cachetools (3.1.1-1) unstable; urgency=medium
+
+  * New upstream release.
+
+  [ Christian Kastner ]
+  * d/control: Bump Standards-Version to 4.4.1 (no changes needed)
+
+ -- Christian Kastner <ckk@debian.org>  Tue, 15 Oct 2019 15:18:52 +0200
+
 python-cachetools (3.1.0-2pexip2) pexip; urgency=medium
 
   * Rebuild in buster environment
