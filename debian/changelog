@@ -1,3 +1,21 @@
+python-cachetools (5.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Add pybuild-plugin-pyproject to Build-Depends
+  * Bump Standards-Version to 4.6.2 (no changes needed)
+
+ -- Christian Kastner <ckk@debian.org>  Sun, 18 Dec 2022 22:30:07 +0100
+
+python-cachetools (5.0.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Bump Standards-Version to 4.6.0 (no changes needed)
+  * Bump debhelper compatibility level to 13
+  * Bump copyrights
+  * Update d/watch
+
+ -- Christian Kastner <ckk@debian.org>  Tue, 15 Feb 2022 12:32:35 +0100
+
 python-cachetools (4.2.1-1) unstable; urgency=medium
 
   * New upstream release.
