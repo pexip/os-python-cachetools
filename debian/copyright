@@ -3,11 +3,11 @@ Upstream-Name: cachetools
 Source: https://pypi.python.org/pypi/cachetools/
 
 Files: *
-Copyright: 2014-2019, Thomas Kemmer
+Copyright: 2014-2021, Thomas Kemmer
 License: Expat
 
 Files: debian/*
-Copyright: 2014-2019, Christian Kastner <ckk@debian.org>
+Copyright: 2014-2022, Christian Kastner <ckk@debian.org>
 License: Expat
 
 License: Expat

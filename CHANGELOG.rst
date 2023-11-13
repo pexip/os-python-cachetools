@@ -1,3 +1,96 @@
+v5.2.0 (2022-05-29)
+===================
+
+- Add ``cachetools.keys.methodkey()``.
+
+- Add ``cache_clear()`` function to decorators.
+
+- Add ``src`` directory to ``sys.path`` for Sphinx autodoc.
+
+- Modernize ``func`` wrappers.
+
+
+v5.1.0 (2022-05-15)
+===================
+
+- Add cache decorator parameters as wrapper function attributes.
+
+
+v5.0.0 (2021-12-21)
+===================
+
+- Require Python 3.7 or later (breaking change).
+
+- Remove deprecated submodules (breaking change).
+
+  The ``cache``, ``fifo``, ``lfu``, ``lru``, ``mru``, ``rr`` and
+  ``ttl`` submodules have been deleted.  Therefore, statements like
+
+  ``from cachetools.ttl import TTLCache``
+
+  will no longer work. Use
+
+  ``from cachetools import TTLCache``
+
+  instead.
+
+- Pass ``self`` to ``@cachedmethod`` key function (breaking change).
+
+  The ``key`` function passed to the ``@cachedmethod`` decorator is
+  now called as ``key(self, *args, **kwargs)``.
+
+  The default key function has been changed to ignore its first
+  argument, so this should only affect applications using custom key
+  functions with the ``@cachedmethod`` decorator.
+
+- Change exact time of expiration in ``TTLCache`` (breaking change).
+
+  ``TTLCache`` items now get expired if their expiration time is less
+  than *or equal to* ``timer()``.  For applications using the default
+  ``timer()``, this should be barely noticable, but it may affect the
+  use of custom timers with larger tick intervals.  Note that this
+  also implies that a ``TTLCache`` with ``ttl=0`` can no longer hold
+  any items, since they will expire immediately.
+
+- Change ``Cache.__repr__()`` format (breaking change).
+
+  String representations of cache instances now use a more compact and
+  efficient format, e.g.
+
+  ``LRUCache({1: 1, 2: 2}, maxsize=10, currsize=2)``
+
+- Add TLRU cache implementation.
+
+- Documentation improvements.
+
+
+v4.2.4 (2021-09-30)
+===================
+
+- Add submodule shims for backward compatibility.
+
+
+v4.2.3 (2021-09-29)
+===================
+
+- Add documentation and tests for using ``TTLCache`` with
+  ``datetime``.
+
+- Link to typeshed typing stubs.
+
+- Flatten package file hierarchy.
+
+
+v4.2.2 (2021-04-27)
+===================
+
+- Update build environment.
+
+- Remove Python 2 remnants.
+
+- Format code with Black.
+
+
 v4.2.1 (2021-01-24)
 ===================
 
