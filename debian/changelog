@@ -1,3 +1,9 @@
+python-cachetools (5.2.0-1pexip1) pexip-bookworm; urgency=medium
+
+  * Initial bookworm build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 16 Nov 2023 10:22:10 +0000
+
 python-cachetools (5.2.0-1) unstable; urgency=medium
 
   * New upstream release.
