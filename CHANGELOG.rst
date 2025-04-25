@@ -1,3 +1,41 @@
+v5.3.3 (2024-02-26)
+===================
+
+- Documentation improvements.
+
+- Update CI environment.
+
+
+v5.3.2 (2023-10-24)
+===================
+
+- Add support for Python 3.12.
+
+- Various documentation improvements.
+
+
+v5.3.1 (2023-05-27)
+===================
+
+- Depend on Python >= 3.7.
+
+
+v5.3.0 (2023-01-22)
+===================
+
+- Add ``cache_info()`` function to ``@cached`` decorator.
+
+
+v5.2.1 (2023-01-08)
+===================
+
+- Add support for Python 3.11.
+
+- Correct version information in RTD documentation.
+
+- ``badges/shields``: Change to GitHub workflow badge routes.
+
+
 v5.2.0 (2022-05-29)
 ===================
 
@@ -47,7 +85,7 @@ v5.0.0 (2021-12-21)
 
   ``TTLCache`` items now get expired if their expiration time is less
   than *or equal to* ``timer()``.  For applications using the default
-  ``timer()``, this should be barely noticable, but it may affect the
+  ``timer()``, this should be barely noticeable, but it may affect the
   use of custom timers with larger tick intervals.  Note that this
   also implies that a ``TTLCache`` with ``ttl=0`` can no longer hold
   any items, since they will expire immediately.
@@ -272,7 +310,7 @@ v1.1.0 (2015-08-28)
 
 - Add ``@cached`` function decorator.
 
-- Add ``hashkey`` and ``typedkey`` fuctions.
+- Add ``hashkey`` and ``typedkey`` functions.
 
 - Add `key` and `lock` arguments to ``@cachedmethod``.
 
