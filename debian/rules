@@ -10,4 +10,4 @@
 
 override_dh_auto_clean:
 	dh_auto_clean
-	rm -rf cachetools.egg-info/
+	rm -rf src/cachetools.egg-info/

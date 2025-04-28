@@ -1,3 +1,5 @@
+:tocdepth: 3
+
 *********************************************************************
 :mod:`cachetools` --- Extensible memoizing collections and decorators
 *********************************************************************
@@ -19,7 +21,6 @@ method calls.
 
 .. testsetup:: *
 
-   import operator
    from cachetools import cached, cachedmethod, LRUCache, TLRUCache, TTLCache
 
    from unittest import mock
@@ -188,7 +189,7 @@ computed when the item is inserted into the cache.
 
 
 Extending cache classes
------------------------
+=======================
 
 Sometimes it may be desirable to notice when and what cache items are
 evicted, i.e. removed from a cache to make room for new items.  Since
@@ -256,7 +257,7 @@ often called with the same arguments:
    >>> fib(42)
    267914296
 
-.. decorator:: cached(cache, key=cachetools.keys.hashkey, lock=None)
+.. decorator:: cached(cache, key=cachetools.keys.hashkey, lock=None, info=False)
 
    Decorator to wrap a function with a memoizing callable that saves
    results in a cache.
@@ -320,6 +321,31 @@ often called with the same arguments:
 
       # no need for get_pep.cache_lock here
       get_pep.cache_clear()
+
+   If `info` is set to :const:`True`, the wrapped function is
+   instrumented with a :func:`cache_info()` function that returns a
+   named tuple showing `hits`, `misses`, `maxsize` and `currsize`, to
+   help measure the effectiveness of the cache.
+
+   .. note::
+
+      Note that this will inflict a - probably minor - performance
+      penalty, so it has to be explicitly enabled.
+
+   .. doctest::
+      :pyversion: >= 3
+
+      >>> @cached(cache=LRUCache(maxsize=32), info=True)
+      ... def get_pep(num):
+      ...     url = 'http://www.python.org/dev/peps/pep-%04d/' % num
+      ...     with urllib.request.urlopen(url) as s:
+      ...         return s.read()
+
+      >>> for n in 8, 290, 308, 320, 8, 218, 320, 279, 289, 320, 9991:
+      ...     pep = get_pep(n)
+
+      >>> get_pep.cache_info()
+      CacheInfo(hits=3, misses=8, maxsize=32, currsize=8)
 
    The original underlying function is accessible through the
    :attr:`__wrapped__` attribute.  This can be used for introspection
@@ -395,7 +421,7 @@ often called with the same arguments:
           def __init__(self, cachesize):
               self.cache = LRUCache(maxsize=cachesize)
 
-          @cachedmethod(operator.attrgetter('cache'))
+          @cachedmethod(lambda self: self.cache)
           def get(self, num):
               """Retrieve text of a Python Enhancement Proposal"""
               url = 'http://www.python.org/dev/peps/pep-%04d/' % num
